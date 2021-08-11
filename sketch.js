@@ -1,7 +1,6 @@
-var bow , arrow,  scene;
+var bow , arrow,  background;
 var bowImage, arrowImage, green_balloonImage, red_balloonImage, pink_balloonImage ,blue_balloonImage, backgroundImage;
-
-var score=0;
+var score, redB, greenB, blueB, pinkB, arrowGroup;
 
 function preload(){
   
@@ -9,10 +8,9 @@ function preload(){
   arrowImage = loadImage("arrow0.png");
   bowImage = loadImage("bow0.png");
   red_balloonImage = loadImage("red_balloon0.png");
-  green_balloonImage = loadImage("green_balloon0.png");
-  pink_balloonImage = loadImage("pink_balloon0.png");
   blue_balloonImage = loadImage("blue_balloon0.png");
-  
+  pink_balloonImage = loadImage("pink_balloon0.png");
+  green_balloonImage=loadImage("green_balloon0.png");  
 }
 
 
@@ -29,14 +27,18 @@ function setup() {
   bow = createSprite(380,220,20,50);
   bow.addImage(bowImage); 
   bow.scale = 1;
-  redB= new Group() 
-  pinkB= new Group ()
-  greenB= new Group ()
-  blueB= new Group ()
-  arrowB= new Group ()
+
+  redB= new Group();
+  greenB= new Group();
+  blueB= new Group();
+  pinkB= new Group();
+  arrowGroup= new Group();
+
+  score=0;
   
-   score = 0    
 }
+
+
 
 function draw() {
  background(0);
@@ -46,6 +48,22 @@ function draw() {
     if (scene.x < 0){
       scene.x = scene.width/2;
     }
+    
+  //creating continous balloons
+  var select_balloon = Math.round(random(1,4));
+  
+  if (World.frameCount % 100 == 0) {
+    if (select_balloon == 1) {
+      redBalloon();
+    }
+    else if (select_balloon == 2) {
+      greenBalloon();
+    } else if (select_balloon == 3) {
+      pinkBalloon();
+    } else {
+      blueBalloon();
+    }
+  }
   
   //moving bow
   bow.y = World.mouseY
@@ -55,39 +73,36 @@ function draw() {
     createArrow();
     
   }
-   
-  //creating continous enemies
-  var select_balloon = Math.round(random(1,4));
-  
-  if (World.frameCount % 100 == 0) {
-    if (select_balloon == 1) {
-      redBalloon();
-    } else if (select_balloon == 2) {
-      greenBalloon();
-    } else if (select_balloon == 3) {
-      blueBalloon();
-    } else {
-      pinkBalloon();
-    }
-  }  
-  if (arrowB.isTouching(redB)){
-    arrowB.destroyEach()
-    redB.destroyEach()
-    score=score +1
-  }
-   if (arrowB.isTouching(pinkB)){
-     arrowB.destroyEach()
-     pinkB.destroyEach()
-     score=score+2
-   } 
-   if (arrowB.isTouching(blueB)) { blueB.destroyEach(); arrowB.destroyEach();
-  score=score+3 }
-   if (arrowB.isTouching(greenB)) { greenB.destroyEach(); arrowB.destroyEach();
-  score=score+4 }
-  drawSprites();
-  text("Score: "+ score, 300,50);
-}
 
+  if (arrowGroup.isTouching(redB)) {
+    redB.destroyEach();
+    arrowGroup.destroyEach();
+      score=score+1;
+    }
+  
+    if (arrowGroup.isTouching(greenB)) {
+    greenB.destroyEach();
+    arrowGroup.destroyEach();
+      score=score+1;
+      }
+  
+    if (arrowGroup.isTouching(blueB)) {
+    blueB.destroyEach();
+    arrowGroup.destroyEach();
+      score=score+1;
+        }
+  
+    if (arrowGroup.isTouching(pinkB)) {
+    pinkB.destroyEach();
+    arrowGroup.destroyEach();
+      score=score+1;
+          }
+   
+  drawSprites();
+
+   
+  text("Score: " + score, 270,30);
+}
 
 // Creating  arrows for bow
  function createArrow() {
@@ -98,7 +113,7 @@ function draw() {
   arrow.velocityX = -4;
   arrow.lifetime = 100;
   arrow.scale = 0.3;
-  arrowB.add(arrow)
+  arrowGroup.add(arrow);
 }
 
 function redBalloon() {
@@ -107,7 +122,7 @@ function redBalloon() {
   red.velocityX = 3;
   red.lifetime = 150;
   red.scale = 0.1;
-  redB.add(red)
+  redB.add(red);  
 }
 
 function blueBalloon() {
@@ -116,7 +131,7 @@ function blueBalloon() {
   blue.velocityX = 3;
   blue.lifetime = 150;
   blue.scale = 0.1;
-  blueB.add(blue)
+  blueB.add(blue);
 }
 
 function greenBalloon() {
@@ -125,7 +140,7 @@ function greenBalloon() {
   green.velocityX = 3;
   green.lifetime = 150;
   green.scale = 0.1;
-  greenB.add(green)
+  greenB.add(green);
 }
 
 function pinkBalloon() {
@@ -133,6 +148,6 @@ function pinkBalloon() {
   pink.addImage(pink_balloonImage);
   pink.velocityX = 3;
   pink.lifetime = 150;
-  pink.scale = 1
-  pinkB.add(pink)
+  //pink.scale = 0.1;
+  pinkB.add(pink);
 }
